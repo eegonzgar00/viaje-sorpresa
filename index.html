@@ -139,12 +139,15 @@ p{font-size:15.5px;line-height:1.6;text-align:center;color:#6e5a7c;max-width:360
 
 img.photo{object-fit:contain;background:linear-gradient(135deg,#ffe3ec,#d9ccff)}
 img.photo.paris{object-fit:cover}
-.memory{position:fixed;inset:0;background:#3d2c4fb3;display:grid;place-items:center;z-index:20;padding:20px}
+.memory{position:fixed;inset:0;background:#3d2c4fb3;display:flex;z-index:20;padding:20px;overflow-y:auto}
 .memory[hidden]{display:none}
-.mem-card{background:var(--card);border-radius:24px;padding:26px 22px;max-width:380px;width:100%;text-align:center;animation:pop .5s ease;box-shadow:0 20px 50px #0003}
+.mem-card{margin:auto;background:var(--card);border-radius:24px;padding:26px 22px;max-width:380px;width:100%;text-align:center;animation:pop .5s ease;box-shadow:0 20px 50px #0003}
 .mem-card .ticket-row{text-align:left}
 .mem-card .btn{margin-top:18px;width:100%}
-@media print{body *{visibility:hidden}.memory,.memory *{visibility:visible}.memory{position:absolute;inset:0;background:#fff;padding:0}.mem-card{box-shadow:none;border:2px solid #ff8fab}.btn,.textbtn,.small.hint-print{display:none!important}}
+.mem-card .btn[hidden]{display:none}
+.reel-stage{width:min(52vw,210px);aspect-ratio:9/16;margin:6px auto 4px;border-radius:18px;overflow:hidden;background:#ffe3ec;box-shadow:0 10px 25px #b26bb033;border:4px solid #fff}
+.reel-stage canvas,.reel-stage video{width:100%;height:100%;display:block;object-fit:cover}
+.reel-stage [hidden]{display:none}
 @media(min-width:600px){.app{border-radius:32px}.photo{height:270px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -257,29 +260,32 @@ img.photo.paris{object-fit:cover}
   </div>
   <h2>Feliz cumpleaños, Yaira! 🥳</h2>
   <p>Nos vemos entre cafés, calles bonitas y alguna que otra vuelta sin mapa.</p>
+  <div class="btns"><button class="btn alt" onclick="openMemory()">Crear mi reel para Instagram 🎬</button></div>
   <div class="footer">FIN · OR JUST THE BEGINNING 💫</div>
  </section>
 
  <div class="controls">
   <button class="textbtn" id="back" onclick="go(current-1)" style="visibility:hidden">← Anterior</button>
-  <button class="textbtn" id="keepsake-btn" onclick="openMemory()">Guardar recuerdo ↗</button>
+  <button class="textbtn" id="keepsake-btn" onclick="openMemory()">Crear reel 🎬</button>
  </div>
 </main>
 <div class="fx" id="fx"></div>
 <div class="memory" id="memory" hidden>
  <div class="mem-card">
-  <div class="eyebrow">Tu recuerdo · Yaira</div>
-  <h2>París, 4–7 de marzo 2027</h2>
-  <p>Escapada de cumpleaños · 4 días / 3 noches</p>
-  <div class="ticket-row"><span>IDA</span><strong>04 MAR 2027</strong></div>
-  <div class="ticket-row"><span>VUELTA</span><strong>07 MAR 2027</strong></div>
-  <div class="ticket-row"><span>VIAJERA</span><strong>YAIRA</strong></div>
-  <button class="btn" onclick="window.print()">Imprimir o guardar PDF 🖨️</button>
-  <p class="small hint-print" style="margin-top:12px">Si no se abre, pulsa Ctrl+P (⌘+P en Mac) y elige «Guardar como PDF».</p>
-  <button class="textbtn" onclick="closeMemory()" style="margin-top:6px">Cerrar</button>
+  <div class="eyebrow">🎬 Tu reel · Yaira</div>
+  <h2>Tu recuerdo de París</h2>
+  <p id="reel-msg">Un video vertical de 16 segundos, listo para subir a Instagram.</p>
+  <div class="reel-stage"><canvas id="reel-canvas" width="720" height="1280"></canvas><video id="reel-video" playsinline muted loop autoplay hidden></video></div>
+  <button class="btn" id="reel-make" onclick="makeReel()">Crear mi reel 🎬</button>
+  <button class="btn alt" id="reel-share" onclick="shareReel()" hidden>Compartir en Instagram 📲</button>
+  <button class="btn" id="reel-save" onclick="saveReel()" hidden>Guardar video ⬇️</button>
+  <p class="small" id="reel-tip" style="margin-top:12px"></p>
+  <button class="textbtn" id="reel-again" onclick="reelAgain()" hidden>Volver a grabar 🔁</button>
+  <button class="textbtn" id="reel-close" onclick="closeMemory()" style="margin-top:6px">Cerrar</button>
  </div>
 </div>
 
+<script src="reel.js"></script>
 <script>
 let current=0;
 const screens=[...document.querySelectorAll('.screen')];
@@ -356,8 +362,6 @@ document.querySelectorAll('.dodge').forEach(btn=>{
   });
 });
 
-function openMemory(){document.getElementById('memory').hidden=false;}
-function closeMemory(){document.getElementById('memory').hidden=true;}
 function party(){
   const box=document.getElementById('fx');
   for(let i=0;i<90;i++){
