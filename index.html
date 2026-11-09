@@ -93,7 +93,7 @@ p{font-size:15.5px;line-height:1.6;text-align:center;color:#6e5a7c;max-width:360
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #d8c8e6,0 10px 18px #b49bd022;border:2px dashed #c3a6ff;animation:none}
 .btn.ghost:nth-child(2){background:linear-gradient(135deg,#ffd166,#ffb997);color:var(--ink);border:0;box-shadow:0 8px 0 #e09a3c,0 14px 22px #ffb99755;animation:none}
 .btn.ghost:hover{background:linear-gradient(135deg,#ffe066,#ffc4a3);color:var(--ink);border-color:transparent;box-shadow:0 8px 0 #e09a3c,0 16px 28px #ffb99799}
-.btn.dodge{position:relative;transition:transform .25s cubic-bezier(.3,1.5,.5,1);animation:none}
+.btn.dodge{position:relative;z-index:5;transition:transform .25s cubic-bezier(.3,1.5,.5,1);animation:none}
 .btn.dodge.shake{animation:shake .4s}
 @keyframes shake{0%,100%{rotate:0deg}25%{rotate:-6deg}75%{rotate:6deg}}
 
@@ -295,6 +295,7 @@ function go(n){
   if(n<0||n>=screens.length)return;
   current=n;
   screens.forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.querySelectorAll('.dodge').forEach(b=>b.style.transform='');
   document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / 06';
   document.getElementById('bar').style.width=((n+1)/6*100)+'%';
   document.getElementById('back').style.visibility=n===0?'hidden':'visible';
@@ -315,7 +316,9 @@ for(let i=0;i<14;i++){
 
 const appEl=document.querySelector('.app');
 document.querySelectorAll('.dodge').forEach(btn=>{
-  const need=parseInt(btn.dataset.dodge,10)||8;
+  // En pantallas táctiles cuesta más pillarlo, así que huye menos veces
+  const touch=matchMedia('(pointer:coarse)').matches;
+  const need=touch?4:(parseInt(btn.dataset.dodge,10)||8);
   const target=parseInt(btn.dataset.go,10);
   const hintEl=btn.parentElement.nextElementSibling;
   const messages=['¡Ups! ¿Seguro? 😏','Casi lo tienes 😜','Eso no es un sí 🏃‍♀️','Te sigo yo a ti 🫢','Ni lo intentes 😂','Esto ya es persecución 🚓','Vale, vale... casi 🫶','Última oportunidad 😈'];
@@ -326,12 +329,25 @@ document.querySelectorAll('.dodge').forEach(btn=>{
     if(now-last<220) return;
     last=now;
     escapes++;
-    btn.style.transform='none';
+    // Medir su sitio original sin la transición (si no, devuelve la posición anterior)
+    const prev=btn.style.transform;
+    btn.style.transition='none'; btn.style.transform='none';
     const r=btn.getBoundingClientRect();
+    btn.style.transform=prev; void btn.offsetWidth; btn.style.transition='';
     const a=appEl.getBoundingClientRect();
     const pad=14;
-    const x=a.left+pad+Math.random()*Math.max(0,a.width-r.width-pad*2);
-    const y=a.top+70+Math.random()*Math.max(0,a.height-r.height-140);
+    // Solo dentro de la parte de la tarjeta que se ve en pantalla, para que no se pierda
+    const ctr=document.querySelector('.controls').getBoundingClientRect();
+    const top=Math.max(a.top,0)+pad+20, bottom=Math.min(a.bottom,ctr.top,innerHeight)-pad;
+    const other=btn.parentElement.querySelector('.btn:not(.dodge)');
+    const o=other&&other.getBoundingClientRect();
+    let x,y;
+    for(let i=0;i<12;i++){
+      x=a.left+pad+Math.random()*Math.max(0,a.width-r.width-pad*2);
+      y=top+Math.random()*Math.max(0,bottom-top-r.height);
+      // Que no tape el otro botón
+      if(!o||y+r.height<o.top-8||y>o.bottom+8) break;
+    }
     btn.style.transform=`translate(${x-r.left}px,${y-r.top}px) rotate(${Math.random()*20-10}deg)`;
     btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent=messages[Math.min(escapes-1,messages.length-1)];
@@ -339,7 +355,8 @@ document.querySelectorAll('.dodge').forEach(btn=>{
 
   // Te persigue: cada vez que el cursor se acerca, sale corriendo
   document.addEventListener('pointermove',e=>{
-    if(caught||escapes>=need||btn.offsetParent===null) return;
+    // Con el dedo (al hacer scroll) no huye: solo con ratón
+    if(e.pointerType!=='mouse'||caught||escapes>=need||btn.offsetParent===null) return;
     const r=btn.getBoundingClientRect();
     const d=Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2));
     if(d<130) flee();
