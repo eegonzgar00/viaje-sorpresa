@@ -296,6 +296,7 @@ function go(n){
   current=n;
   screens.forEach((s,i)=>s.classList.toggle('active',i===n));
   document.querySelectorAll('.dodge').forEach(b=>b.style.transform='');
+  document.querySelectorAll('.btns .btn:not(.ghost)').forEach(b=>{b.style.fontSize='';b.style.padding='';});
   document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / 06';
   document.getElementById('bar').style.width=((n+1)/6*100)+'%';
   document.getElementById('back').style.visibility=n===0?'hidden':'visible';
@@ -336,19 +337,21 @@ document.querySelectorAll('.dodge').forEach(btn=>{
     btn.style.transform=prev; void btn.offsetWidth; btn.style.transition='';
     const a=appEl.getBoundingClientRect();
     const pad=14;
-    // Solo dentro de la parte de la tarjeta que se ve en pantalla, para que no se pierda
-    const ctr=document.querySelector('.controls').getBoundingClientRect();
-    const top=Math.max(a.top,0)+pad+20, bottom=Math.min(a.bottom,ctr.top,innerHeight)-pad;
+    // Se mueve solo cerca de su sitio y cada vez se hace más pequeño
+    const s=Math.max(.5,1-escapes*.12);
+    const w=r.width*s, h=r.height*s;
     const other=btn.parentElement.querySelector('.btn:not(.dodge)');
     const o=other&&other.getBoundingClientRect();
     let x,y;
     for(let i=0;i<12;i++){
-      x=a.left+pad+Math.random()*Math.max(0,a.width-r.width-pad*2);
-      y=top+Math.random()*Math.max(0,bottom-top-r.height);
+      x=a.left+pad+Math.random()*Math.max(0,a.width-w-pad*2);
+      y=r.top+(r.height-h)/2-10+Math.random()*90;
       // Que no tape el otro botón
-      if(!o||y+r.height<o.top-8||y>o.bottom+8) break;
+      if(!o||y+h<o.top-6||y>o.bottom+6) break;
     }
-    btn.style.transform=`translate(${x-r.left}px,${y-r.top}px) rotate(${Math.random()*20-10}deg)`;
+    btn.style.transform=`translate(${x-r.left-(r.width-w)/2}px,${y-r.top-(r.height-h)/2}px) scale(${s})`;
+    // Y el botón del "sí" crece
+    if(other){other.style.fontSize=Math.min(14+escapes*2,24)+'px';other.style.padding=Math.min(16+escapes*3,28)+'px 20px';}
     btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent=messages[Math.min(escapes-1,messages.length-1)];
   }
