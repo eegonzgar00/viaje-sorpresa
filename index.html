@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ff8fab">
+<title>Un pequeño viaje para Yaira</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Un regalito de cumpleaños 🎂 Ábrelo con calma.">
+<meta property="og:title" content="Un pequeño viaje para Yaira 💌">
+<meta property="og:description" content="Un regalito de cumpleaños 🎂 Ábrelo con calma.">
+<meta property="og:image" content="https://eegonzgar00.github.io/viaje-sorpresa/img/gatito.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+<style>
+:root{
+  --pink:#ff8fab;--peach:#ffb997;--yellow:#ffd166;--mint:#7bdcb5;--sky:#7ec8ff;--lilac:#c3a6ff;--ink:#3d2c4f;--card:#fffaf5;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;display:grid;place-items:center;padding:18px;
+  font-family:'Trebuchet MS','Segoe UI',Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,#ffd6e0 0%,#ffe9c9 35%,#d4f5e9 70%,#d9ccff 100%);
+  background-size:300% 300%;animation:bgShift 14s ease infinite;overflow-x:hidden;
+}
+@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* blobs de fondo */
+.blob{position:fixed;border-radius:50%;filter:blur(40px);opacity:.55;z-index:0;animation:float 9s ease-in-out infinite}
+.b1{width:260px;height:260px;background:var(--pink);top:-60px;left:-60px}
+.b2{width:300px;height:300px;background:var(--sky);bottom:-90px;right:-80px;animation-delay:-3s}
+.b3{width:200px;height:200px;background:var(--yellow);top:40%;right:-60px;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-30px) scale(1.08)}}
+
+.app{
+  position:relative;z-index:1;width:min(100%,480px);min-height:min(860px,calc(100vh - 36px));
+  background:var(--card);border-radius:28px;overflow:hidden;
+  box-shadow:0 20px 60px #7a4f8a33, 0 0 0 6px #ffffffaa;
+  padding-bottom:12px;
+}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 22px 6px;font:700 11px Arial,sans-serif;letter-spacing:1.5px;color:#9a6b8f;text-transform:uppercase}
+.progress{height:8px;background:#f1e3ec;margin:10px 22px 0;border-radius:99px;overflow:hidden}
+.bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--pink),var(--peach),var(--yellow),var(--mint),var(--sky));background-size:200% 100%;animation:shimmer 3s linear infinite;transition:width .6s cubic-bezier(.3,1.4,.6,1)}
+@keyframes shimmer{to{background-position:200% 0}}
+
+.screen{display:none;padding:14px 22px 28px}
+.screen.active{display:block;animation:pop .6s cubic-bezier(.3,1.3,.5,1)}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+
+.eyebrow{display:inline-block;margin:6px auto 14px;padding:6px 14px;border-radius:99px;background:linear-gradient(90deg,var(--lilac),var(--sky));color:#fff;font:700 10px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;text-align:center;box-shadow:0 4px 12px #9b7fd933}
+.center{text-align:center}
+h1,h2,p{margin-top:0}
+h1{font-size:clamp(36px,9vw,50px);font-weight:800;line-height:1.05;text-align:center;margin:14px 0 12px;letter-spacing:-1px;
+  background:linear-gradient(90deg,#e0437a,#e8643a,#c98a00,#0f9e7a,#2a6fd6,#7a4fe0);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradientMove 5s linear infinite}
+@keyframes gradientMove{to{background-position:250% center}}
+h1.italic{font-style:italic;font-weight:700}
+h2{font-size:26px;line-height:1.2;font-weight:700;text-align:center;margin:18px 0 10px;color:var(--ink)}
+p{font-size:15.5px;line-height:1.6;text-align:center;color:#6e5a7c;max-width:360px;margin:0 auto 16px}
+
+.photo{width:100%;height:240px;object-fit:cover;display:block;border-radius:22px;border:5px solid #fff;box-shadow:0 10px 25px #b26bb022;transition:transform .5s}
+.photo:hover{transform:scale(1.02) rotate(-.5deg)}
+.photo.short{height:180px}
+.wiggle{animation:wiggle 3s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+
+.emoji-row{text-align:center;font-size:28px;letter-spacing:6px;margin:4px 0 6px}
+.emoji-row span{display:inline-block;animation:bounce 1.6s ease-in-out infinite}
+.emoji-row span:nth-child(2){animation-delay:.2s}
+.emoji-row span:nth-child(3){animation-delay:.4s}
+.emoji-row span:nth-child(4){animation-delay:.6s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* botones */
+.btns{display:grid;gap:12px;margin:22px 0 6px;position:relative;min-height:60px}
+.btn{
+  position:relative;border:0;border-radius:99px;padding:16px 20px;
+  font:800 14px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#fff;
+  background:linear-gradient(135deg,var(--pink),#ff7a59);
+  box-shadow:0 8px 0 #d9557a, 0 14px 22px #ff6f9144;
+  transition:transform .15s,box-shadow .15s,filter .2s;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.btn:nth-child(2){background:linear-gradient(135deg,var(--sky),var(--lilac));box-shadow:0 8px 0 #7b5fc4,0 14px 22px #7ec8ff44}
+.btn.alt{background:linear-gradient(135deg,var(--mint),#3fc49a);box-shadow:0 8px 0 #2c9c79,0 14px 22px #3fc49a44}
+.btn:hover{transform:translateY(-4px) scale(1.05) rotate(-1deg);filter:saturate(1.25) brightness(1.1)}
+.btn:active{transform:translateY(5px);box-shadow:0 2px 0 #d9557a}
+.btn::after{content:"✨";position:absolute;right:14px;top:50%;transform:translateY(-50%) scale(0);transition:transform .3s}
+.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 30%,#ffffff99 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s ease;pointer-events:none}
+.btn:hover::before{transform:translateX(120%)}
+.btn:hover::after{transform:translateY(-50%) scale(1)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #d8c8e6,0 10px 18px #b49bd022;border:2px dashed #c3a6ff;animation:none}
+.btn.ghost:nth-child(2){background:linear-gradient(135deg,#ffd166,#ffb997);color:var(--ink);border:0;box-shadow:0 8px 0 #e09a3c,0 14px 22px #ffb99755;animation:none}
+.btn.ghost:hover{background:linear-gradient(135deg,#ffe066,#ffc4a3);color:var(--ink);border-color:transparent;box-shadow:0 8px 0 #e09a3c,0 16px 28px #ffb99799}
+.btn.dodge{position:relative;transition:transform .25s cubic-bezier(.3,1.5,.5,1);animation:none}
+.btn.dodge.shake{animation:shake .4s}
+@keyframes shake{0%,100%{rotate:0deg}25%{rotate:-6deg}75%{rotate:6deg}}
+
+.hint{font:700 11px Arial,sans-serif;color:#b58fc0;text-align:center;margin-top:6px;letter-spacing:.5px;min-height:16px}
+
+.footer{text-align:center;font:700 10px Arial,sans-serif;letter-spacing:2px;color:#b58fc0;margin-top:22px}
+
+/* tarjeta de fechas */
+.card{border-radius:22px;padding:20px 16px;margin:20px 0;background:linear-gradient(135deg,#fff,#fff4e8);border:3px solid var(--yellow);box-shadow:0 8px 22px #ffd16655;position:relative}
+.card-label{text-align:center;font:800 11px Arial,sans-serif;letter-spacing:2px;color:#ff7a59}
+.bigdate{text-align:center;font-size:52px;font-weight:800;letter-spacing:2px;margin:8px 0 2px;background:linear-gradient(90deg,#ff6f91,#4fb6ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.month{text-align:center;font:800 13px Arial,sans-serif;letter-spacing:3px;color:var(--ink)}
+.days{display:flex;justify-content:space-around;border-top:2px dotted #ffd166;margin-top:14px;padding-top:12px;font:800 11px Arial,sans-serif;letter-spacing:1px}
+.days span{padding:6px 8px;border-radius:12px;background:#fff;box-shadow:0 2px 6px #0000000d;color:var(--ink)}
+.days span:nth-child(odd){background:#ffe3ec}
+.days span:nth-child(even){background:#dcf7ee}
+.days span{animation:bounce 2s ease-in-out infinite}
+.days span:nth-child(2){animation-delay:.2s}.days span:nth-child(3){animation-delay:.4s}.days span:nth-child(4){animation-delay:.6s}
+
+/* billete */
+.ticket{background:linear-gradient(135deg,#fff7e6,#ffe6f0);border:3px dashed #ff8fab;border-radius:20px;padding:20px 18px;margin:20px 0;position:relative}
+.ticket:before,.ticket:after{content:"";position:absolute;width:26px;height:26px;border-radius:50%;background:var(--card);top:50%;transform:translateY(-50%)}
+.ticket:before{left:-16px}.ticket:after{right:-16px}
+.ticket h2{font-size:34px;letter-spacing:2px;margin:8px 0;background:linear-gradient(90deg,#ff6f91,#7ec8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ticket-row{display:flex;justify-content:space-between;border-top:2px solid #ffffffcc;padding:12px 2px;font:700 11px Arial,sans-serif;letter-spacing:1px;color:#8a6f98}
+.ticket-row strong{font-size:13px;color:var(--ink)}
+.barcode{height:44px;margin:14px auto 4px;width:75%;border-radius:6px;background:repeating-linear-gradient(90deg,#3d2c4f 0 2px,transparent 2px 4px,#ff6f91 4px 5px,transparent 5px 8px)}
+.small{text-align:center;font:700 10px Arial,sans-serif;letter-spacing:1.5px;color:#9a7fa8}
+.stamp{display:inline-block;margin-top:10px;padding:8px 12px;border-radius:12px;background:#ffd166;color:var(--ink);font:800 11px Arial,sans-serif;letter-spacing:2px;transform:rotate(-6deg);animation:wiggle 2.5s ease-in-out infinite}
+
+.controls{display:flex;justify-content:space-between;align-items:center;margin:0 22px 18px;position:relative;z-index:2}
+.textbtn{border:0;background:transparent;color:#9a6b8f;font:800 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;padding:8px;border-radius:99px}
+.textbtn:hover{background:#fff;color:var(--pink)}
+
+/* confeti y corazones */
+.fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.fx i{position:absolute;top:-20px;width:9px;height:14px;border-radius:3px;animation:fall 3.8s linear forwards}
+.fx b{position:absolute;bottom:-40px;font-size:22px;animation:rise 4s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(900deg);opacity:.2}}
+@keyframes rise{to{transform:translateY(-110vh) scale(1.3);opacity:0}}
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.hearts span{position:absolute;bottom:-30px;font-size:18px;opacity:.6;animation:rise 9s linear infinite}
+
+img.photo{object-fit:contain;background:linear-gradient(135deg,#ffe3ec,#d9ccff)}
+img.photo.paris{object-fit:cover}
+.memory{position:fixed;inset:0;background:#3d2c4fb3;display:grid;place-items:center;z-index:20;padding:20px}
+.memory[hidden]{display:none}
+.mem-card{background:var(--card);border-radius:24px;padding:26px 22px;max-width:380px;width:100%;text-align:center;animation:pop .5s ease;box-shadow:0 20px 50px #0003}
+.mem-card .ticket-row{text-align:left}
+.mem-card .btn{margin-top:18px;width:100%}
+@media print{body *{visibility:hidden}.memory,.memory *{visibility:visible}.memory{position:absolute;inset:0;background:#fff;padding:0}.mem-card{box-shadow:none;border:2px solid #ff8fab}.btn,.textbtn,.small.hint-print{display:none!important}}
+@media(min-width:600px){.app{border-radius:32px}.photo{height:270px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div class="hearts" id="hearts"></div>
+
+<main class="app" aria-live="polite">
+ <div class="top"><span>✈️ Somewhere, sometime...</span><span id="counter">01 / 06</span></div>
+ <div class="progress"><div class="bar" id="bar"></div></div>
+
+ <!-- 0 -->
+ <section class="screen active" data-step="0">
+  <div class="center"><span class="eyebrow">🎂 Un regalito · 2027</span></div>
+  <img class="photo wiggle" src="img/gatito.png" alt="Gatito con una rosa">
+  <h1>Hola, Yaira!</h1>
+  <h2>Tengo algo para ti 💌</h2>
+  <p>Como es tu cumpleaños, he pensado que estaría bien hacer algo diferente este año.</p>
+  <div class="btns"><button class="btn" onclick="go(1)">A ver, cuéntame 👀</button></div>
+  <div class="footer">MADE FOR YOUR BIRTHDAY</div>
+ </section>
+
+ <!-- 1 -->
+ <section class="screen" data-step="1">
+  <div class="center"><span class="eyebrow">🗺️ Diario personal · 002</span></div>
+  <img class="photo" src="img/tren.png" alt="Paisaje de viaje desde un tren">
+  <h1 class="italic">A little escape...</h1>
+  <p>Hay cumpleaños que se celebran con una tarta. Y otros que necesitan un cambio de escenario.</p>
+  <h2>¿Qué tal si dejamos la rutina en pausa unos días?</h2>
+  <div class="btns">
+   <button class="btn" onclick="go(2)">Me apunto 🙌</button>
+   <button class="btn ghost dodge" data-dodge="8" data-go="2">Necesito saber más...</button>
+  </div>
+  <div class="hint" data-hint></div>
+  <div class="footer">SOME THINGS ARE BETTER UNPLANNED</div>
+ </section>
+
+ <!-- 2 -->
+ <section class="screen" data-step="2">
+  <div class="center"><span class="eyebrow">🧳 Notas de viaje · 003</span></div>
+  <img class="photo short" src="img/diario.png" alt="Diario y recuerdos de viaje">
+  <h1 class="italic">Well then, it's a date.</h1>
+  <p>Ya que te apuntas, hay algo que deberías anotar.</p>
+  <div class="card">
+   <div class="card-label">📅 SAVE THESE DAYS</div>
+   <div class="bigdate">04 — 07</div><div class="month">MARZO · 2027</div>
+   <div class="days"><span>JUE 04</span><span>VIE 05</span><span>SÁB 06</span><span>DOM 07</span></div>
+  </div>
+  <h2>No hagas otros planes. 🚫📆</h2>
+  <p>Solo necesitas tener esos días libres y una maleta medio preparada.</p>
+  <div class="btns"><button class="btn" onclick="go(3)">Fechas guardadas ✅</button></div>
+  <div class="footer">LOCATION: TOP SECRET</div>
+ </section>
+
+ <!-- 3 -->
+ <section class="screen" data-step="3">
+  <div class="center"><span class="eyebrow">💌 Postales · 004</span></div>
+  <img class="photo" src="img/cafe.png" alt="Café europeo">
+  <h1 class="italic">A little hint...</h1>
+  <p>No voy a decirte dónde todavía. Pero digamos que quizá te venga bien recordar cómo se dice...</p>
+  <h1 style="font-size:56px">Bonjour! 🥐</h1>
+  <p>¿Te va sonando la cosa?</p>
+  <div class="btns">
+   <button class="btn" onclick="go(4)">Tengo una sospecha 🤔</button>
+   <button class="btn ghost dodge" data-dodge="8" data-go="4">Ni idea, sorpréndeme</button>
+  </div>
+  <div class="hint" data-hint></div>
+  <div class="footer">UN PETIT SECRET</div>
+ </section>
+
+ <!-- 4 -->
+ <section class="screen" data-step="4">
+  <div class="center"><span class="eyebrow">📍 Destino final · 005</span></div>
+  <img class="photo paris" src="img/paris.jpg" alt="Torre Eiffel y el Sena al atardecer">
+  <div class="emoji-row"><span>🗼</span><span>🥖</span><span>🌷</span><span>💖</span></div>
+  <div class="center"><span class="eyebrow">🎉 Surprise, Yaira.</span></div>
+  <h1 class="italic">We're going to...</h1>
+  <h1 style="font-size:50px;letter-spacing:2px">PARIS, BABY! 🇫🇷</h1>
+  <p>Sí. Lo has leído bien. Tu regalo de cumpleaños es una escapada a la ciudad de la luz.</p>
+  <div class="card">
+   <div class="card-label">🌍 YOUR NEXT ADVENTURE</div>
+   <h2>PARÍS, FRANCIA</h2>
+   <div class="ticket-row"><span>IDA</span><strong>04 MAR 2027</strong></div>
+   <div class="ticket-row"><span>VUELTA</span><strong>07 MAR 2027</strong></div>
+   <div class="ticket-row"><span>DURACIÓN</span><strong>4 DÍAS / 3 NOCHES</strong></div>
+   <div class="ticket-row"><span>VIAJERA</span><strong>YAIRA</strong></div>
+  </div>
+  <p>Un cumpleaños, una escapada y unos cuantos recuerdos nuevos. Ahora sí, ve pensando qué vas a meter en esa maleta. 👜</p>
+  <div class="btns"><button class="btn alt" onclick="go(5);party()">Ver mi billete de regalo 🎁</button></div>
+  <div class="footer">BON VOYAGE, YAIRA.</div>
+ </section>
+
+ <!-- 5 -->
+ <section class="screen" data-step="5">
+  <div class="center"><span class="eyebrow">🎫 A ticket to somewhere · Just for you</span></div>
+  <img class="photo short" src="img/gatito.png" alt="Gatito con una rosa">
+  <h1 class="italic">See you in Paris.</h1>
+  <p>Este billete es un recuerdo de tu regalo. La aventura empieza el 4 de marzo.</p>
+  <div class="ticket">
+   <div class="small">BIRTHDAY GIFT · NOT A BOARDING PASS</div>
+   <h2>PARIS</h2>
+   <div class="ticket-row"><span>PASSENGER</span><strong>YAIRA</strong></div>
+   <div class="ticket-row"><span>DEPARTURE</span><strong>04 MAR 2027</strong></div>
+   <div class="ticket-row"><span>RETURN</span><strong>07 MAR 2027</strong></div>
+   <div class="ticket-row"><span>DESTINATION</span><strong>PARIS, FRANCE</strong></div>
+   <div class="barcode"></div>
+   <div class="small">BON VOYAGE · BIRTHDAY EDITION</div>
+   <div style="text-align:center"><span class="stamp">✈️ APPROVED</span></div>
+  </div>
+  <h2>Feliz cumpleaños, Yaira! 🥳</h2>
+  <p>Nos vemos entre cafés, calles bonitas y alguna que otra vuelta sin mapa.</p>
+  <div class="footer">FIN · OR JUST THE BEGINNING 💫</div>
+ </section>
+
+ <div class="controls">
+  <button class="textbtn" id="back" onclick="go(current-1)" style="visibility:hidden">← Anterior</button>
+  <button class="textbtn" id="keepsake-btn" onclick="openMemory()">Guardar recuerdo ↗</button>
+ </div>
+</main>
+<div class="fx" id="fx"></div>
+<div class="memory" id="memory" hidden>
+ <div class="mem-card">
+  <div class="eyebrow">Tu recuerdo · Yaira</div>
+  <h2>París, 4–7 de marzo 2027</h2>
+  <p>Escapada de cumpleaños · 4 días / 3 noches</p>
+  <div class="ticket-row"><span>IDA</span><strong>04 MAR 2027</strong></div>
+  <div class="ticket-row"><span>VUELTA</span><strong>07 MAR 2027</strong></div>
+  <div class="ticket-row"><span>VIAJERA</span><strong>YAIRA</strong></div>
+  <button class="btn" onclick="window.print()">Imprimir o guardar PDF 🖨️</button>
+  <p class="small hint-print" style="margin-top:12px">Si no se abre, pulsa Ctrl+P (⌘+P en Mac) y elige «Guardar como PDF».</p>
+  <button class="textbtn" onclick="closeMemory()" style="margin-top:6px">Cerrar</button>
+ </div>
+</div>
+
+<script>
+let current=0;
+const screens=[...document.querySelectorAll('.screen')];
+const colors=['#ff8fab','#ffd166','#7bdcb5','#7ec8ff','#c3a6ff','#ffb997'];
+
+function go(n){
+  if(n<0||n>=screens.length)return;
+  current=n;
+  screens.forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / 06';
+  document.getElementById('bar').style.width=((n+1)/6*100)+'%';
+  document.getElementById('back').style.visibility=n===0?'hidden':'visible';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Botón que huye: se mueve al acercarse el cursor o al tocarlo.
+   Tras varios intentos deja de huir para que pueda pulsarse. */
+const hearts=document.getElementById('hearts');
+for(let i=0;i<14;i++){
+  const h=document.createElement('span');
+  h.textContent=['💗','✨','🌸','💛'][i%4];
+  h.style.left=Math.random()*100+'%';
+  h.style.animationDelay=(-Math.random()*9)+'s';
+  h.style.animationDuration=(7+Math.random()*6)+'s';
+  hearts.appendChild(h);
+}
+
+const appEl=document.querySelector('.app');
+document.querySelectorAll('.dodge').forEach(btn=>{
+  const need=parseInt(btn.dataset.dodge,10)||8;
+  const target=parseInt(btn.dataset.go,10);
+  const hintEl=btn.parentElement.nextElementSibling;
+  const messages=['¡Ups! ¿Seguro? 😏','Casi lo tienes 😜','Eso no es un sí 🏃‍♀️','Te sigo yo a ti 🫢','Ni lo intentes 😂','Esto ya es persecución 🚓','Vale, vale... casi 🫶','Última oportunidad 😈'];
+  let escapes=0, caught=false, last=0;
+
+  function flee(){
+    const now=Date.now();
+    if(now-last<220) return;
+    last=now;
+    escapes++;
+    btn.style.transform='none';
+    const r=btn.getBoundingClientRect();
+    const a=appEl.getBoundingClientRect();
+    const pad=14;
+    const x=a.left+pad+Math.random()*Math.max(0,a.width-r.width-pad*2);
+    const y=a.top+70+Math.random()*Math.max(0,a.height-r.height-140);
+    btn.style.transform=`translate(${x-r.left}px,${y-r.top}px) rotate(${Math.random()*20-10}deg)`;
+    btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
+    if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent=messages[Math.min(escapes-1,messages.length-1)];
+  }
+
+  // Te persigue: cada vez que el cursor se acerca, sale corriendo
+  document.addEventListener('pointermove',e=>{
+    if(caught||escapes>=need||btn.offsetParent===null) return;
+    const r=btn.getBoundingClientRect();
+    const d=Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2));
+    if(d<130) flee();
+  });
+
+  // En móvil: al tocarlo también huye
+  btn.addEventListener('touchstart',e=>{
+    if(caught||escapes>=need) return;
+    e.preventDefault(); flee();
+  },{passive:false});
+
+  // Solo se puede pulsar cuando ya te ha pillado
+  btn.addEventListener('click',e=>{
+    if(escapes<need){ e.preventDefault(); flee(); return; }
+    caught=true;
+    btn.style.transform='';
+    btn.classList.remove('dodge');
+    if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent='¡Te pillé! 🎉';
+    setTimeout(()=>go(target),500);
+  });
+});
+
+function openMemory(){document.getElementById('memory').hidden=false;}
+function closeMemory(){document.getElementById('memory').hidden=true;}
+function party(){
+  const box=document.getElementById('fx');
+  for(let i=0;i<90;i++){
+    const el=document.createElement('i');
+    el.style.left=Math.random()*100+'%';
+    el.style.animationDelay=(Math.random()*.8)+'s';
+    el.style.background=colors[i%colors.length];
+    el.style.transform='rotate('+Math.random()*180+'deg)';
+    box.appendChild(el);
+    setTimeout(()=>el.remove(),4800);
+  }
+  const emojis=['✈️','🗼','🥐','💖','🌷','🎉'];
+  for(let i=0;i<14;i++){
+    const b=document.createElement('b');
+    b.textContent=emojis[i%emojis.length];
+    b.style.left=Math.random()*90+'%';
+    b.style.animationDelay=(Math.random()*.6)+'s';
+    box.appendChild(b);
+    setTimeout(()=>b.remove(),4800);
+  }
+}
+</script>
+</body>
+</html>
