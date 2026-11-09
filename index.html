@@ -296,7 +296,7 @@ function go(n){
   current=n;
   screens.forEach((s,i)=>s.classList.toggle('active',i===n));
   document.querySelectorAll('.dodge').forEach(b=>b.style.transform='');
-  document.querySelectorAll('.btns .btn:not(.ghost)').forEach(b=>{b.style.fontSize='';b.style.padding='';});
+  document.querySelectorAll('.btns .btn:not(.ghost)').forEach(b=>{b.style.animation='';b.style.transform='';});
   document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / 06';
   document.getElementById('bar').style.width=((n+1)/6*100)+'%';
   document.getElementById('back').style.visibility=n===0?'hidden':'visible';
@@ -351,7 +351,8 @@ document.querySelectorAll('.dodge').forEach(btn=>{
     }
     btn.style.transform=`translate(${x-r.left-(r.width-w)/2}px,${y-r.top-(r.height-h)/2}px) scale(${s})`;
     // Y el botón del "sí" crece
-    if(other){other.style.fontSize=Math.min(14+escapes*2,24)+'px';other.style.padding=Math.min(16+escapes*3,28)+'px 20px';}
+    // (con transform y sin el latido: cambiar tamaño/padding con animación hace que el iPhone deje de pintarlo)
+    if(other){other.style.animation='none';other.style.transform=`scale(${Math.min(1+escapes*.05,1.15)})`;}
     btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent=messages[Math.min(escapes-1,messages.length-1)];
   }
