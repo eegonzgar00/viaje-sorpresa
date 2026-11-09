@@ -93,11 +93,6 @@ p{font-size:15.5px;line-height:1.6;text-align:center;color:#6e5a7c;max-width:360
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #d8c8e6,0 10px 18px #b49bd022;border:2px dashed #c3a6ff;animation:none}
 .btn.ghost:nth-child(2){background:linear-gradient(135deg,#ffd166,#ffb997);color:var(--ink);border:0;box-shadow:0 8px 0 #e09a3c,0 14px 22px #ffb99755;animation:none}
 .btn.ghost:hover{background:linear-gradient(135deg,#ffe066,#ffc4a3);color:var(--ink);border-color:transparent;box-shadow:0 8px 0 #e09a3c,0 16px 28px #ffb99799}
-.btn.dodge{position:relative;z-index:5;transition:transform .25s cubic-bezier(.3,1.5,.5,1);animation:none}
-.btn.dodge.shake{animation:shake .4s}
-@keyframes shake{0%,100%{rotate:0deg}25%{rotate:-6deg}75%{rotate:6deg}}
-
-.hint{font:700 11px Arial,sans-serif;color:#b58fc0;text-align:center;margin-top:6px;letter-spacing:.5px;min-height:16px}
 
 .footer{text-align:center;font:700 10px Arial,sans-serif;letter-spacing:2px;color:#b58fc0;margin-top:22px}
 
@@ -180,9 +175,8 @@ img.photo.paris{object-fit:cover}
   <h2>¿Qué tal si dejamos la rutina en pausa unos días?</h2>
   <div class="btns">
    <button class="btn" onclick="go(2)">Me apunto 🙌</button>
-   <button class="btn ghost dodge" data-dodge="8" data-go="2">Necesito saber más...</button>
+   <button class="btn ghost" onclick="go(2)">Necesito saber más...</button>
   </div>
-  <div class="hint" data-hint></div>
   <div class="footer">SOME THINGS ARE BETTER UNPLANNED</div>
  </section>
 
@@ -213,9 +207,8 @@ img.photo.paris{object-fit:cover}
   <p>¿Te va sonando la cosa?</p>
   <div class="btns">
    <button class="btn" onclick="go(4)">Tengo una sospecha 🤔</button>
-   <button class="btn ghost dodge" data-dodge="8" data-go="4">Ni idea, sorpréndeme</button>
+   <button class="btn ghost" onclick="go(4)">Ni idea, sorpréndeme</button>
   </div>
-  <div class="hint" data-hint></div>
   <div class="footer">UN PETIT SECRET</div>
  </section>
 
@@ -295,16 +288,12 @@ function go(n){
   if(n<0||n>=screens.length)return;
   current=n;
   screens.forEach((s,i)=>s.classList.toggle('active',i===n));
-  document.querySelectorAll('.dodge').forEach(b=>b.style.transform='');
-  document.querySelectorAll('.btns .btn:not(.ghost)').forEach(b=>{b.style.animation='';b.style.transform='';});
   document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / 06';
   document.getElementById('bar').style.width=((n+1)/6*100)+'%';
   document.getElementById('back').style.visibility=n===0?'hidden':'visible';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* Botón que huye: se mueve al acercarse el cursor o al tocarlo.
-   Tras varios intentos deja de huir para que pueda pulsarse. */
 const hearts=document.getElementById('hearts');
 for(let i=0;i<14;i++){
   const h=document.createElement('span');
@@ -314,74 +303,6 @@ for(let i=0;i<14;i++){
   h.style.animationDuration=(7+Math.random()*6)+'s';
   hearts.appendChild(h);
 }
-
-const appEl=document.querySelector('.app');
-document.querySelectorAll('.dodge').forEach(btn=>{
-  // En pantallas táctiles cuesta más pillarlo, así que huye menos veces
-  const touch=matchMedia('(pointer:coarse)').matches;
-  const need=touch?4:(parseInt(btn.dataset.dodge,10)||8);
-  const target=parseInt(btn.dataset.go,10);
-  const hintEl=btn.parentElement.nextElementSibling;
-  const messages=['¡Ups! ¿Seguro? 😏','Casi lo tienes 😜','Eso no es un sí 🏃‍♀️','Te sigo yo a ti 🫢','Ni lo intentes 😂','Esto ya es persecución 🚓','Vale, vale... casi 🫶','Última oportunidad 😈'];
-  let escapes=0, caught=false, last=0;
-
-  function flee(){
-    const now=Date.now();
-    if(now-last<220) return;
-    last=now;
-    escapes++;
-    // Medir su sitio original sin la transición (si no, devuelve la posición anterior)
-    const prev=btn.style.transform;
-    btn.style.transition='none'; btn.style.transform='none';
-    const r=btn.getBoundingClientRect();
-    btn.style.transform=prev; void btn.offsetWidth; btn.style.transition='';
-    const a=appEl.getBoundingClientRect();
-    const pad=14;
-    // Se mueve solo cerca de su sitio y cada vez se hace más pequeño
-    const s=Math.max(.5,1-escapes*.12);
-    const w=r.width*s, h=r.height*s;
-    const other=btn.parentElement.querySelector('.btn:not(.dodge)');
-    const o=other&&other.getBoundingClientRect();
-    let x,y;
-    for(let i=0;i<12;i++){
-      x=a.left+pad+Math.random()*Math.max(0,a.width-w-pad*2);
-      y=r.top+(r.height-h)/2-10+Math.random()*90;
-      // Que no tape el otro botón
-      if(!o||y+h<o.top-6||y>o.bottom+6) break;
-    }
-    btn.style.transform=`translate(${x-r.left-(r.width-w)/2}px,${y-r.top-(r.height-h)/2}px) scale(${s})`;
-    // Y el botón del "sí" crece
-    // (con transform y sin el latido: cambiar tamaño/padding con animación hace que el iPhone deje de pintarlo)
-    if(other){other.style.animation='none';other.style.transform=`scale(${Math.min(1+escapes*.05,1.15)})`;}
-    btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
-    if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent=messages[Math.min(escapes-1,messages.length-1)];
-  }
-
-  // Te persigue: cada vez que el cursor se acerca, sale corriendo
-  document.addEventListener('pointermove',e=>{
-    // Con el dedo (al hacer scroll) no huye: solo con ratón
-    if(e.pointerType!=='mouse'||caught||escapes>=need||btn.offsetParent===null) return;
-    const r=btn.getBoundingClientRect();
-    const d=Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2));
-    if(d<130) flee();
-  });
-
-  // En móvil: al tocarlo también huye
-  btn.addEventListener('touchstart',e=>{
-    if(caught||escapes>=need) return;
-    e.preventDefault(); flee();
-  },{passive:false});
-
-  // Solo se puede pulsar cuando ya te ha pillado
-  btn.addEventListener('click',e=>{
-    if(escapes<need){ e.preventDefault(); flee(); return; }
-    caught=true;
-    btn.style.transform='';
-    btn.classList.remove('dodge');
-    if(hintEl&&hintEl.hasAttribute('data-hint')) hintEl.textContent='¡Te pillé! 🎉';
-    setTimeout(()=>go(target),500);
-  });
-});
 
 function party(){
   const box=document.getElementById('fx');
